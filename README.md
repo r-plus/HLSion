@@ -1,11 +1,27 @@
 # HLSion
 
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
 HTTP Live Streaming (HLS) download manager to offline playback.
 
 ## Requirements
 iOS 10.0+
 Xcode 8.0+
 Swift 3.0+
+
+## Installation
+
+Add below to your `Cartfile`.
+
+```
+github "r-plsu/HLSion" "master"
+```
+
+Thus build framework.
+
+```
+carthage update HLSion
+```
 
 ## Usage
 
