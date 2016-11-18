@@ -72,9 +72,10 @@ public class HLSion {
     ///
     /// - Parameters:
     ///   - url: HLS(m3u8) URL.
+    ///   - options: AVURLAsset options.
     ///   - name: Identifier name.
-    public convenience init(url: URL, name: String) {
-        let urlAsset = AVURLAsset(url: url)
+    public convenience init(url: URL, options: [String: Any]? = nil, name: String) {
+        let urlAsset = AVURLAsset(url: url, options: options)
         self.init(asset: urlAsset, description: name)
     }
     
