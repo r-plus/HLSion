@@ -77,7 +77,9 @@ class ViewController: UITableViewController {
         
         guard let playerViewControler = segue.destination as? AVPlayerViewController else { return }
         guard let hlsion = sender as? HLSion else { return }
-        let playerItem = AVPlayerItem(asset: hlsion.urlAsset)
+        guard let localUrl = hlsion.localUrl else { return }
+        let asset = AVURLAsset(url: localUrl)
+        let playerItem = AVPlayerItem(asset: asset)
         let player = AVPlayer(playerItem: playerItem)
         playerViewControler.player = player
     }

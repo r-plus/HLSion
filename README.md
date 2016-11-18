@@ -46,7 +46,12 @@ hlsion.deleteAsset()
 Play after download.
 
 ```swift
-let playerItem = AVPlayerItem(asset: hlsion.urlAsset)
+guard let localUrl = hlsion.localUrl else {
+    // This instance not yet downloaded.
+    return
+}
+let localAsset = AVURLAsset(url: localUrl)
+let playerItem = AVPlayerItem(asset: localAsset)
 let player = AVPlayer(playerItem: playerItem)
 player.play()
 ```
