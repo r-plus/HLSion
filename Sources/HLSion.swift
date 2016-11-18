@@ -26,6 +26,11 @@ public class HLSion {
     public let name: String
     /// Target AVURLAsset that have HLS URL.
     public let urlAsset: AVURLAsset
+    /// Local url path that saved for offline playback. return nil if not downloaded.
+    public var localUrl: URL? {
+        guard let relativePath = AssetStore.path(forName: name) else { return nil }
+        return SessionManager.shared.homeDirectoryURL.appendingPathComponent(relativePath)
+    }
     /// Download state.
     public var state: State {
         if SessionManager.shared.assetExists(forName: name) {
