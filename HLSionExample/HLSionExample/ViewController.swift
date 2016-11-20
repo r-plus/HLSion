@@ -64,6 +64,8 @@ class ViewController: UITableViewController {
                     tableView.reloadData()
                     print(relativePath)
                 }
+            }.onError { (error) in
+                print("Error finish. \(error)")
             }
         case .downloading:
             break

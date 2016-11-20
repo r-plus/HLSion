@@ -11,6 +11,12 @@ import AVFoundation
 
 public typealias ProgressParameter = (Double) -> Void
 public typealias FinishParameter = (String) -> Void
+public typealias ErrorParameter = (Error) -> Void
+
+    enum Result {
+        case success
+        case failure(Error)
+    }
 
 public class HLSion {
     
@@ -56,9 +62,10 @@ public class HLSion {
         return size
     }
     
-    internal var completed = false
+    internal var result: Result?
     internal var progressClosure: ProgressParameter?
     internal var finishClosure: FinishParameter?
+    internal var errorClosure: ErrorParameter?
 //    internal var resolvedMediaSelection: AVMediaSelection?
     
     // MARK: Intialization
@@ -107,15 +114,28 @@ public class HLSion {
         return self
     }
     
-    /// Set finish closure.
+    /// Set finish(success) closure.
     ///
-    /// - Parameter closure: Finish closure that will invoke when finished download media.
+    /// - Parameter closure: Finish closure that will invoke when successfully finished download media.
     /// - Returns: Chainable self instance.
     @discardableResult
     public func finish(relativePath closure: @escaping FinishParameter) -> Self {
         finishClosure = closure
-        if completed {
+        if let result = result, case .success = result {
             closure(AssetStore.path(forName: name)!)
+        }
+        return self
+    }
+    
+    /// Set failure closure.
+    ///
+    /// - Parameter closure: Finish closure that will invoke when failure finished download media.
+    /// - Returns: Chainable self instance.
+    @discardableResult
+    public func onError(error closure: @escaping ErrorParameter) -> Self {
+        errorClosure = closure
+        if let result = result, case .failure(let err) = result {
+            closure(err)
         }
         return self
     }

@@ -90,6 +90,7 @@ final internal class SessionManager: NSObject, AVAssetDownloadDelegate {
         if let error = error as? NSError {
             switch (error.domain, error.code) {
             case (NSURLErrorDomain, NSURLErrorCancelled):
+                // hlsion.result as success when cancelled.
                 guard let localFileLocation = AssetStore.path(forName: hlsion.name) else { return }
                 
                 do {
@@ -100,20 +101,28 @@ final internal class SessionManager: NSObject, AVAssetDownloadDelegate {
                 }
                 
             case (NSURLErrorDomain, NSURLErrorUnknown):
+                hlsion.result = .failure(error)
                 fatalError("Downloading HLS streams is not supported in the simulator.")
                 
             default:
-                assertionFailure("An unexpected error occured \(error.domain)")
+                hlsion.result = .failure(error)
+                print("An unexpected error occured \(error.domain)")
             }
+        } else {
+            hlsion.result = .success
         }
-        hlsion.finishClosure?(AssetStore.path(forName: hlsion.name)!)
+        switch hlsion.result! {
+        case .success:
+            hlsion.finishClosure?(AssetStore.path(forName: hlsion.name)!)
+        case .failure(let err):
+            hlsion.errorClosure?(err)
+        }
     }
     
     func urlSession(_ session: URLSession, assetDownloadTask: AVAssetDownloadTask, didFinishDownloadingTo location: URL) {
         
         guard let hlsion = downloadingMap[assetDownloadTask] else { return }
         AssetStore.set(path: location.relativePath, forName: hlsion.name)
-        hlsion.completed = true
     }
     
     func urlSession(_ session: URLSession,
@@ -122,7 +131,7 @@ final internal class SessionManager: NSObject, AVAssetDownloadDelegate {
                     totalTimeRangesLoaded loadedTimeRanges: [NSValue],
                     timeRangeExpectedToLoad: CMTimeRange) {
         guard let hlsion = downloadingMap[assetDownloadTask] else { return }
-        hlsion.completed = false
+        hlsion.result = nil
         guard let progressClosure = hlsion.progressClosure else { return }
         
         let percentComplete = loadedTimeRanges.reduce(0.0) {
