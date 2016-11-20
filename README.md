@@ -34,6 +34,8 @@ let hlsion = HLSion(url: url, name: "identifier").download { (progressPercentage
     // call while each file downloaded.
 }.finish { (relativePath) in
     // call when complete or cancel download task finish.
+}.onError { (error) in
+    // call when error finish.
 }
 
 // cancelable.
