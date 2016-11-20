@@ -13,11 +13,6 @@ public typealias ProgressParameter = (Double) -> Void
 public typealias FinishParameter = (String) -> Void
 public typealias ErrorParameter = (Error) -> Void
 
-    enum Result {
-        case success
-        case failure(Error)
-    }
-
 public class HLSion {
     
     public enum State: String {
@@ -26,6 +21,11 @@ public class HLSion {
         case downloaded
     }
     
+    enum Result {
+        case success
+        case failure(Error)
+    }
+
     // MARK: Properties
     
     /// Identifier name.
