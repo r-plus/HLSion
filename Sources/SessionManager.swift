@@ -87,7 +87,7 @@ final internal class SessionManager: NSObject, AVAssetDownloadDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         guard let task = task as? AVAssetDownloadTask , let hlsion = downloadingMap.removeValue(forKey: task) else { return }
         
-        if let error = error as? NSError {
+        if let error = error as NSError? {
             switch (error.domain, error.code) {
             case (NSURLErrorDomain, NSURLErrorCancelled):
                 // hlsion.result as success when cancelled.
